@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR and VR Master Notes</title>
+    <style>
+        :root {
+            --bg: #f4efe6;
+            --paper: rgba(255, 255, 255, 0.9);
+            --paper-strong: #ffffff;
+            --ink: #1f2e38;
+            --muted: #5d6a73;
+            --accent: #0f766e;
+            --accent-deep: #123f49;
+            --accent-soft: #d8efec;
+            --gold: #b56a1e;
+            --gold-soft: #fff0dc;
+            --line: #d8dfe4;
+            --shadow: 0 20px 45px rgba(15, 34, 48, 0.1);
+            --radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            color: var(--ink);
+            font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+            line-height: 1.75;
+            background:
+                radial-gradient(circle at top left, rgba(15, 118, 110, 0.16), transparent 26%),
+                radial-gradient(circle at top right, rgba(181, 106, 30, 0.12), transparent 22%),
+                linear-gradient(180deg, #f8f4ec 0%, #f2ede3 100%);
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .page-shell {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 16px 72px;
+        }
+
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: clamp(24px, 4vw, 48px);
+            border-radius: 30px;
+            color: #ffffff;
+            background: linear-gradient(135deg, #10343c 0%, #1d5864 55%, #d39a42 150%);
+            box-shadow: var(--shadow);
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: auto -6% -28% auto;
+            width: min(420px, 48vw);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.12);
+            filter: blur(2px);
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin: 0 0 12px;
+            padding: 7px 14px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            margin: 0 0 12px;
+            max-width: 12ch;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+            font-size: clamp(2.4rem, 5vw, 4.4rem);
+            line-height: 1.04;
+        }
+
+        .hero-copy {
+            max-width: 72ch;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.92);
+            font-size: clamp(1rem, 1.8vw, 1.12rem);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(4px);
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 1.45rem;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+        }
+
+        .stat span {
+            color: rgba(255, 255, 255, 0.88);
+            font-size: 0.96rem;
+        }
+
+        .sticky-nav {
+            position: sticky;
+            top: 12px;
+            z-index: 20;
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            margin: 24px 0 16px;
+            padding: 14px;
+            border: 1px solid rgba(18, 63, 73, 0.12);
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.84);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .sticky-nav a {
+            flex: 0 0 auto;
+            padding: 10px 15px;
+            border-radius: 999px;
+            border: 1px solid rgba(15, 118, 110, 0.14);
+            background: #ffffff;
+            color: var(--accent-deep);
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .sticky-nav a:hover,
+        .sticky-nav a:focus-visible {
+            transform: translateY(-1px);
+            background: #f4fbfa;
+        }
+
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .toolbar button {
+            padding: 10px 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(18, 63, 73, 0.18);
+            background: var(--accent-deep);
+            color: #ffffff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .toolbar button.secondary {
+            background: #ffffff;
+            color: var(--accent-deep);
+        }
+
+        .intro-card,
+        .unit-accordion {
+            background: var(--paper);
+            border: 1px solid rgba(31, 46, 56, 0.08);
+            box-shadow: var(--shadow);
+        }
+
+        .intro-card {
+            padding: 24px;
+            border-radius: var(--radius);
+        }
+
+        .intro-card h2 {
+            margin: 0 0 10px;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+            font-size: clamp(1.55rem, 2.6vw, 2.1rem);
+            color: var(--accent-deep);
+        }
+
+        .intro-card p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .panel {
+            padding: 16px 18px;
+            border-radius: 18px;
+            background: #fbfcfc;
+            border: 1px solid #e5ebef;
+        }
+
+        .panel h3 {
+            margin: 0 0 8px;
+            font-size: 1rem;
+            color: var(--accent);
+        }
+
+        .mini-list {
+            margin: 0;
+            padding-left: 18px;
+        }
+
+        .mini-list li {
+            margin-bottom: 6px;
+            color: #485761;
+        }
+
+        .unit-accordion {
+            margin-top: 22px;
+            border-radius: 26px;
+            overflow: hidden;
+        }
+
+        .unit-accordion summary {
+            list-style: none;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 18px;
+            align-items: center;
+            padding: 22px 24px;
+            cursor: pointer;
+            background: linear-gradient(180deg, rgba(15, 118, 110, 0.08), rgba(255, 255, 255, 0.9));
+        }
+
+        .unit-accordion summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .unit-accordion summary:focus-visible {
+            outline: 3px solid rgba(15, 118, 110, 0.25);
+            outline-offset: -3px;
+        }
+
+        .unit-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: var(--accent-deep);
+            color: #ffffff;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .unit-title-group h2 {
+            margin: 0;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+            font-size: clamp(1.35rem, 2.6vw, 2rem);
+            color: var(--accent-deep);
+        }
+
+        .unit-title-group p {
+            margin: 4px 0 0;
+            color: var(--muted);
+        }
+
+        .chevron {
+            width: 14px;
+            height: 14px;
+            border-right: 2px solid var(--accent-deep);
+            border-bottom: 2px solid var(--accent-deep);
+            transform: rotate(45deg);
+            transition: transform 0.22s ease;
+        }
+
+        .unit-accordion[open] .chevron {
+            transform: rotate(-135deg);
+        }
+
+        .unit-panel {
+            padding: 0 24px 28px;
+        }
+
+        .question-index {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 6px 0 24px;
+        }
+
+        .question-index a {
+            padding: 12px 14px;
+            border-radius: 16px;
+            border: 1px solid #dce7e7;
+            background: #f7fbfb;
+            text-decoration: none;
+            color: var(--accent-deep);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .question-card {
+            margin-top: 18px;
+            padding: 22px;
+            border-radius: 22px;
+            border: 1px solid #e3eaee;
+            background: linear-gradient(180deg, #ffffff, #fcfaf7);
+            box-shadow: 0 12px 30px rgba(31, 46, 56, 0.06);
+            scroll-margin-top: 112px;
+        }
+
+        .question-card h3 {
+            margin: 0 0 12px;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+            font-size: clamp(1.26rem, 2.4vw, 1.72rem);
+            line-height: 1.25;
+            color: #143642;
+        }
+
+        .q-tag {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 5px 10px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-deep);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .lead {
+            margin: 0 0 14px;
+            color: #3b4a54;
+            font-size: 1.03rem;
+        }
+
+        h4 {
+            margin: 18px 0 8px;
+            padding: 8px 12px;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 12px 12px 0;
+            background: linear-gradient(90deg, rgba(15, 118, 110, 0.14), rgba(15, 118, 110, 0));
+            color: var(--accent-deep);
+            font-size: 1.02rem;
+        }
+
+        p,
+        li {
+            color: #31414b;
+        }
+
+        ul,
+        ol {
+            padding-left: 22px;
+            margin-top: 8px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .callout {
+            margin: 16px 0;
+            padding: 16px 18px;
+            border-radius: 18px;
+            border: 1px solid #cee4df;
+            background: #f4faf8;
+        }
+
+        .callout.warn {
+            border-color: #f1d29a;
+            background: #fff7ea;
+        }
+
+        .callout.compare {
+            border-color: #cfe0f6;
+            background: #eef5ff;
+        }
+
+        .callout strong {
+            color: #173f49;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin: 14px 0 18px;
+            border-radius: 18px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 720px;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        th,
+        td {
+            padding: 12px 14px;
+            border: 1px solid #dce3e8;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background: var(--accent-deep);
+            color: #ffffff;
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+            font-size: 1rem;
+        }
+
+        .diagram-card {
+            margin: 18px 0;
+            padding: 18px;
+            border-radius: 20px;
+            border: 1px solid #cfe2dd;
+            background: linear-gradient(135deg, #f4fbfa, #ffffff);
+        }
+
+        .diagram-card figcaption {
+            margin-bottom: 12px;
+            color: var(--accent-deep);
+            font-family: Cambria, Georgia, "Times New Roman", serif;
+            font-size: 1.08rem;
+            font-weight: 700;
+        }
+
+        .flow {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .node {
+            flex: 1 1 140px;
+            min-width: 140px;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid #bfd9d4;
+            background: #ffffff;
+            text-align: center;
+            font-weight: 700;
+            color: #23414b;
+            box-shadow: 0 8px 16px rgba(18, 63, 73, 0.05);
+        }
+
+        .arrow {
+            color: var(--accent);
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .split-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+        }
+
+        .footer {
+            margin-top: 26px;
+            padding: 22px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(31, 46, 56, 0.08);
+            text-align: center;
+            color: var(--muted);
+        }
+
+        @media (max-width: 840px) {
+            .unit-accordion summary {
+                grid-template-columns: 1fr auto;
+            }
+
+            .unit-badge {
+                grid-column: 1 / -1;
+                justify-self: start;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .page-shell {
+                padding: 14px 12px 56px;
+            }
+
+            .hero,
+            .intro-card,
+            .unit-panel {
+                padding-left: 18px;
+                padding-right: 18px;
+            }
+
+            .question-card {
+                padding: 18px;
+            }
+
+            .question-index {
+                grid-template-columns: 1fr;
+            }
+
+            .sticky-nav {
+                top: 8px;
+                padding: 10px;
+            }
+
+            .toolbar {
+                justify-content: stretch;
+            }
+
+            .toolbar button {
+                flex: 1 1 220px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-shell">
+        <header class="hero">
+            <p class="eyebrow">Offline Exam Companion</p>
+            <h1>Augmented Reality and Virtual Reality Master Notes</h1>
+            <p class="hero-copy">
+                A single-page, responsive study website with detailed answers for all five units of AR/VR.
+                The content is structured for exam preparation: direct definitions, clear side headings,
+                comparison tables, diagrams, examples, and quick revision highlights.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <strong>5</strong>
+                    <span>Units covered in one file</span>
+                </div>
+                <div class="stat">
+                    <strong>50</strong>
+                    <span>Exam-style long answers</span>
+                </div>
+                <div class="stat">
+                    <strong>100%</strong>
+                    <span>Offline and self-contained</span>
+                </div>
+                <div class="stat">
+                    <strong>Responsive</strong>
+                    <span>Phone, tablet, and desktop ready</span>
+                </div>
+            </div>
+        </header>
+
+        <nav class="sticky-nav" aria-label="Unit navigation">
+            <a href="#unit-1">Unit I</a>
+            <a href="#unit-2">Unit II</a>
+            <a href="#unit-3">Unit III</a>
+            <a href="#unit-4">Unit IV</a>
+            <a href="#unit-5">Unit V</a>
+        </nav>
+
+        <div class="toolbar">
+            <button type="button" id="expand-all">Expand all units</button>
+            <button type="button" class="secondary" id="collapse-all">Collapse to overview</button>
+        </div>
+
+        <section class="intro-card">
+            <h2>How To Use This Page</h2>
+            <p>
+                Each unit opens into ten anchored answers. Use the sticky unit tabs to jump between units, or
+                use the question index inside each unit to move directly to a topic. The answers are written in
+                an exam-ready tone, but they still explain the concepts logically from fundamentals to applications.
+            </p>
+            <div class="intro-grid">
+                <div class="panel">
+                    <h3>Content Style</h3>
+                    <ul class="mini-list">
+                        <li>Definition first, then concept building.</li>
+                        <li>Highlighted side headings for faster revision.</li>
+                        <li>Examples, comparisons, and conclusion notes.</li>
+                    </ul>
+                </div>
+                <div class="panel">
+                    <h3>Useful Sections</h3>
+                    <ul class="mini-list">
+                        <li>Tables for AR vs VR vs MR and display technologies.</li>
+                        <li>Flow diagrams for architecture and working principles.</li>
+                        <li>Callout boxes for important exam points.</li>
+                    </ul>
+                </div>
+                <div class="panel">
+                    <h3>Reference Basis</h3>
+                    <ul class="mini-list">
+                        <li>Built from your attached notes.</li>
+                        <li>Expanded wherever the notes were brief.</li>
+                        <li>Kept self-contained for direct study use.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <main>
+            <details class="unit-accordion" id="unit-1" open>
+                <summary>
+                    <span class="unit-badge">Unit I</span>
+                    <span class="unit-title-group">
+                        <h2>Introduction to Augmented Reality</h2>
+                        <p>Foundations of AR: definition, evolution, working, comparison, architecture, and applications.</p>
+                    </span>
+                    <span class="chevron" aria-hidden="true"></span>
+                </summary>
+                <div class="unit-panel">
+                    <div class="question-index">
+                        <a href="#unit-1-q1">1. Definition and features</a>
+                        <a href="#unit-1-q2">2. History and evolution</a>
+                        <a href="#unit-1-q3">3. AR with VR, MR, AI</a>
+                        <a href="#unit-1-q4">4. Working principle</a>
+                        <a href="#unit-1-q5">5. Ingredients of AR</a>
+                        <a href="#unit-1-q6">6. AR vs VR vs MR</a>
+                        <a href="#unit-1-q7">7. Real-time interaction and 3D registration</a>
+                        <a href="#unit-1-q8">8. Applications of AR</a>
+                        <a href="#unit-1-q9">9. Challenges in AR</a>
+                        <a href="#unit-1-q10">10. AR architecture</a>
+                    </div>
+
+                    <article class="question-card" id="unit-1-q1">
+                        <span class="q-tag">Question 1</span>
+                        <h3>Define Augmented Reality and explain its key features with examples.</h3>
+                        <p class="lead">
+                            Augmented Reality (AR) is a technology that enhances the physical world by overlaying
+                            computer-generated information such as text, images, 3D objects, audio, animations, or
+                            navigation cues onto a user's real environment in real time. Unlike Virtual Reality, AR does
+                            not replace the real world; it enriches it with useful digital content.
+                        </p>
+                        <h4>Core idea of AR</h4>
+                        <p>
+                            The word "augmented" means "enhanced" or "added to." In AR, the user still sees the real
+                            world, but software combines that view with virtual content to make the environment more
+                            informative, interactive, and meaningful. A phone camera, tablet, smart glasses, or see-through
+                            headset becomes the medium through which the user experiences this digital layer.
+                        </p>
+                        <h4>Key features of AR</h4>
+                        <ul>
+                            <li><strong>Combination of real and virtual content:</strong> Real scenes and digital objects appear together in one view.</li>
+                            <li><strong>Real-time interaction:</strong> The system updates immediately as the user moves, rotates the device, or interacts with the scene.</li>
+                            <li><strong>3D registration:</strong> Virtual objects are aligned correctly with physical surfaces and appear fixed in space.</li>
+                            <li><strong>Context awareness:</strong> AR can use location, lighting, object recognition, or user behavior to decide what to display.</li>
+                            <li><strong>Natural interaction:</strong> Touch, gesture, gaze, and voice can all be used to control content.</li>
+                            <li><strong>Multimedia support:</strong> AR can present text, sound, arrows, labels, models, or animated instructions.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Examples:</strong> Pokemon Go places virtual characters in a real camera view. Snapchat and Instagram filters add digital masks to faces. Google Maps Live View places navigation arrows on actual streets. IKEA Place shows virtual furniture inside a real room.
+                        </div>
+                        <h4>Importance</h4>
+                        <p>
+                            AR is valuable because it reduces the gap between information and action. Instead of reading
+                            instructions separately, the user receives relevant information directly on top of the object,
+                            machine, road, classroom model, or medical scan they are already looking at.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q2">
+                        <span class="q-tag">Question 2</span>
+                        <h3>Explain the history and evolution of Augmented Reality in detail.</h3>
+                        <p class="lead">
+                            The development of AR moved through three major phases: early research and prototypes,
+                            specialized industrial systems, and finally consumer-scale mobile and wearable experiences.
+                        </p>
+                        <h4>Early foundations</h4>
+                        <ul>
+                            <li><strong>1968:</strong> Ivan Sutherland built the first head-mounted display, often called the "Sword of Damocles." It showed basic graphics and proved that digital images could be linked to physical viewing.</li>
+                            <li><strong>1974:</strong> Myron Kruger developed Videoplace, a lab for artificial reality where users interacted with projected computer responses.</li>
+                        </ul>
+                        <h4>Term formation and functional AR systems</h4>
+                        <ul>
+                            <li><strong>1990:</strong> Tom Caudell, a Boeing researcher, coined the term "Augmented Reality."</li>
+                            <li><strong>1992:</strong> Louis Rosenberg created Virtual Fixtures for the US Air Force, one of the first practical AR systems for guiding human tasks.</li>
+                            <li><strong>1994:</strong> Julie Martin used AR concepts in the theater production <em>Dancing in Cyberspace</em>, showing AR's creative potential.</li>
+                            <li><strong>1998:</strong> Sportsvision introduced the virtual first-down line in NFL broadcasts, making AR visible to mass audiences.</li>
+                        </ul>
+                        <h4>Software, tracking, and industrial growth</h4>
+                        <ul>
+                            <li><strong>1999:</strong> NASA used hybrid synthetic vision for navigation support.</li>
+                            <li><strong>2000:</strong> Hirokazu Kato released ARToolKit, which helped developers build marker-based AR applications.</li>
+                            <li><strong>2003 onward:</strong> Sports broadcasting, repair support, military visualization, and industrial maintenance began using AR more seriously.</li>
+                            <li><strong>2009:</strong> Esquire magazine used AR-enabled print media, expanding AR into publishing and advertising.</li>
+                        </ul>
+                        <h4>Mobile and wearable era</h4>
+                        <ul>
+                            <li><strong>2013:</strong> Volkswagen's MARTA app used AR to guide technicians during service procedures.</li>
+                            <li><strong>2014:</strong> Google Glass popularized the idea of wearable AR eyewear.</li>
+                            <li><strong>2016:</strong> Microsoft HoloLens shipped as a more advanced spatial-computing headset, while Pokemon Go took AR into mainstream mobile culture.</li>
+                            <li><strong>2017:</strong> IKEA Place showed how AR could transform online retail by previewing products in real homes.</li>
+                            <li><strong>2018:</strong> Apple ARKit and Google ARCore made high-quality mobile AR development easier and more scalable.</li>
+                        </ul>
+                        <h4>Current evolution</h4>
+                        <p>
+                            From 2021 onward, AR grew through social media filters, virtual try-on apps, smart mirrors,
+                            indoor navigation, educational visualizers, digital twins, and enterprise remote assistance.
+                            Modern AR increasingly depends on AI, cloud processing, better depth sensing, and 5G connectivity.
+                            The overall evolution shows a shift from research novelty to practical utility, especially in industry,
+                            commerce, entertainment, and learning.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q3">
+                        <span class="q-tag">Question 3</span>
+                        <h3>Discuss the relationship between AR and other technologies such as VR, MR, and AI.</h3>
+                        <p class="lead">
+                            AR belongs to the broader field of Extended Reality (XR), which includes Virtual Reality (VR)
+                            and Mixed Reality (MR). It also relies strongly on Artificial Intelligence (AI), computer vision,
+                            sensing, and networking technologies.
+                        </p>
+                        <h4>AR and VR</h4>
+                        <p>
+                            AR overlays digital content on the real world, while VR creates a completely simulated world.
+                            In AR, reality remains visible and forms the background for interaction. In VR, the user is immersed
+                            in a fully digital environment through a headset. The relationship is complementary: AR is stronger
+                            when real context matters, while VR is stronger when total immersion is required.
+                        </p>
+                        <h4>AR and MR</h4>
+                        <p>
+                            Mixed Reality sits between AR and VR on the reality-virtuality continuum. MR goes beyond simple
+                            overlay: digital objects do not just appear on top of the real world, they understand space, remain
+                            anchored in it, and interact with physical objects and user actions. For example, a holographic model
+                            in MR can stay fixed on a real table and respond to hand gestures as though it truly exists there.
+                        </p>
+                        <h4>AR and AI</h4>
+                        <p>
+                            AI makes AR smarter and more adaptive. Computer vision models recognize faces, objects, surfaces,
+                            text, and gestures. Natural language processing enables voice commands and conversational helpers.
+                            Machine learning improves scene understanding, lighting estimation, semantic labeling, and content
+                            personalization. Without AI, AR can overlay graphics; with AI, AR can understand what the user is
+                            seeing and respond intelligently.
+                        </p>
+                        <div class="callout compare">
+                            <strong>Examples:</strong> AR navigation uses AI for scene recognition, VR therapy uses immersive simulations for exposure treatment, and MR headsets like HoloLens allow spatial anchoring and interaction with both physical and digital objects.
+                        </div>
+                        <h4>Other supporting technologies</h4>
+                        <ul>
+                            <li><strong>IoT:</strong> AR can visualize real-time machine, building, or sensor data in physical space.</li>
+                            <li><strong>Cloud computing:</strong> Helps store and stream heavy 3D content or support multi-user AR.</li>
+                            <li><strong>5G:</strong> Reduces latency and improves remote collaboration.</li>
+                            <li><strong>Wearables:</strong> Smart glasses and watches make AR more natural and hands-free.</li>
+                        </ul>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q4">
+                        <span class="q-tag">Question 4</span>
+                        <h3>Explain the working principle of Augmented Reality systems.</h3>
+                        <p class="lead">
+                            The working principle of AR is to sense the real environment, understand the user's position,
+                            generate suitable digital content, and display that content so it appears attached to the physical world.
+                        </p>
+                        <h4>Step-by-step working</h4>
+                        <ol>
+                            <li><strong>Scene capture:</strong> Cameras, GPS, gyroscopes, accelerometers, depth sensors, and light sensors collect information from the surrounding environment.</li>
+                            <li><strong>Environment understanding:</strong> Computer vision detects surfaces, markers, edges, objects, or rooms. SLAM maps the scene and estimates device pose.</li>
+                            <li><strong>Tracking and registration:</strong> The system calculates where virtual objects should be placed and how they should stay aligned when the user moves.</li>
+                            <li><strong>Content generation:</strong> A scene generator or rendering engine creates 2D or 3D graphics, text, labels, or animations.</li>
+                            <li><strong>Display of augmentation:</strong> The combined real and virtual view is presented on a phone, tablet, headset, monitor, or projector.</li>
+                            <li><strong>User interaction:</strong> Touch, gesture, voice, gaze, or controller input changes the displayed content in real time.</li>
+                        </ol>
+                        <h4>Important technologies in the pipeline</h4>
+                        <ul>
+                            <li><strong>Marker-based AR:</strong> Uses printed images, QR codes, or predefined patterns for stable placement.</li>
+                            <li><strong>Markerless AR:</strong> Uses natural features, location, or depth mapping instead of a specific marker.</li>
+                            <li><strong>SLAM:</strong> Simultaneous Localization and Mapping helps the device build a map while locating itself in that map.</li>
+                            <li><strong>Rendering:</strong> Digital objects are shaded, scaled, and positioned to match real-world perspective.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Simple explanation:</strong> AR first sees the world, then understands the world, then adds the right digital object at the right place, and finally keeps that object stable while the user moves.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q5">
+                        <span class="q-tag">Question 5</span>
+                        <h3>Describe the ingredients required for an effective AR experience.</h3>
+                        <p class="lead">
+                            A good AR experience is not created by hardware alone. It requires the right combination of
+                            sensing, processing, interface design, content quality, and user-centered interaction.
+                        </p>
+                        <h4>Technical ingredients</h4>
+                        <ul>
+                            <li><strong>Device hardware:</strong> Smartphones, tablets, AR glasses, headsets, or projection systems.</li>
+                            <li><strong>Sensors:</strong> Camera, IMU, GPS, depth sensor, compass, microphone, and sometimes LiDAR.</li>
+                            <li><strong>Tracking and mapping:</strong> Accurate pose estimation, feature detection, SLAM, and surface understanding.</li>
+                            <li><strong>Processing unit:</strong> CPU, GPU, and AI accelerators for real-time calculations and rendering.</li>
+                            <li><strong>Display technology:</strong> Clear screens or see-through optics with sufficient brightness and field of view.</li>
+                        </ul>
+                        <h4>Experience design ingredients</h4>
+                        <ul>
+                            <li><strong>Relevant content:</strong> The augmentation should help the user accomplish a real task or understand a real object.</li>
+                            <li><strong>Low latency:</strong> Delay must be minimal so the digital layer feels stable and believable.</li>
+                            <li><strong>Readable presentation:</strong> Fonts, colors, depth, and size should remain visible in different lighting conditions.</li>
+                            <li><strong>Natural interaction:</strong> Touch, voice, or gesture controls should be simple and intuitive.</li>
+                            <li><strong>Safety and comfort:</strong> The experience must avoid clutter, confusion, eye strain, or dangerous distraction.</li>
+                        </ul>
+                        <h4>Content and deployment ingredients</h4>
+                        <p>
+                            Effective AR also needs good 3D models, optimized animations, well-planned workflows, and
+                            sometimes cloud services for collaboration or large content delivery. In industrial and educational
+                            AR, domain-specific knowledge is equally important because the content must be accurate, not just attractive.
+                        </p>
+                        <div class="callout warn">
+                            <strong>Exam point:</strong> An AR system becomes effective only when technical accuracy, useful content, and human usability work together.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q6">
+                        <span class="q-tag">Question 6</span>
+                        <h3>Compare AR with Virtual Reality and Mixed Reality in detail.</h3>
+                        <p class="lead">
+                            AR, VR, and MR are related immersive technologies, but they differ in the way they treat the real
+                            environment, digital content, and user interaction.
+                        </p>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Aspect</th>
+                                        <th>Augmented Reality (AR)</th>
+                                        <th>Virtual Reality (VR)</th>
+                                        <th>Mixed Reality (MR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Basic idea</td>
+                                        <td>Adds digital content to the real world.</td>
+                                        <td>Replaces the real world with a virtual one.</td>
+                                        <td>Blends real and digital worlds so both interact.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>User view</td>
+                                        <td>User still sees the physical environment.</td>
+                                        <td>User sees only the simulated environment.</td>
+                                        <td>User sees real surroundings plus spatially aware digital objects.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Level of immersion</td>
+                                        <td>Low to medium immersion.</td>
+                                        <td>High immersion.</td>
+                                        <td>Medium to high immersion with spatial interaction.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Typical devices</td>
+                                        <td>Phones, tablets, smart glasses, AR HMDs.</td>
+                                        <td>Opaque VR headsets, controllers, haptic devices.</td>
+                                        <td>Advanced spatial headsets such as HoloLens and similar devices.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Interaction style</td>
+                                        <td>Touch, gesture, voice, location-based overlay.</td>
+                                        <td>Controllers, hand tracking, room-scale movement.</td>
+                                        <td>Gesture, gaze, voice, and object-aware interaction in shared space.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Main use cases</td>
+                                        <td>Navigation, maintenance, retail, education.</td>
+                                        <td>Simulation, gaming, therapy, virtual meetings.</td>
+                                        <td>Design review, remote collaboration, advanced industrial guidance.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Examples</td>
+                                        <td>Pokemon Go, IKEA Place, Live View navigation.</td>
+                                        <td>Flight simulators, Meta Quest games, virtual labs.</td>
+                                        <td>HoloLens medical guidance, spatial 3D modeling.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h4>Interpretation</h4>
+                        <p>
+                            AR is ideal when the real environment must remain visible. VR is ideal when complete
+                            immersion is needed. MR is suited for high-end applications where digital objects must behave
+                            like real objects in shared physical space. In practice, all three belong to the same immersive
+                            computing family, but their user experience goals are different.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q7">
+                        <span class="q-tag">Question 7</span>
+                        <h3>Explain real-time interaction and 3D registration in AR systems.</h3>
+                        <p class="lead">
+                            Real-time interaction and 3D registration are the two most important characteristics of a useful AR system.
+                            Without them, digital objects feel detached, delayed, and unconvincing.
+                        </p>
+                        <h4>Real-time interaction</h4>
+                        <p>
+                            Real-time interaction means the AR system responds instantly to changes in user movement,
+                            environment, or input. If the user walks around a virtual chair, the chair must rotate correctly
+                            from the user's new viewpoint. If the user touches, drags, or speaks a command, the system must
+                            respond without noticeable delay.
+                        </p>
+                        <ul>
+                            <li>Requires fast sensor sampling and low-latency processing.</li>
+                            <li>Keeps the experience natural and believable.</li>
+                            <li>Is essential in navigation, surgery, gaming, and repair assistance.</li>
+                        </ul>
+                        <h4>3D registration</h4>
+                        <p>
+                            3D registration is the accurate alignment of virtual objects with real-world coordinates, scale,
+                            orientation, and perspective. A virtual engine label must stay fixed on the real engine even if the
+                            user moves around it. Good registration makes the augmentation appear to belong to the physical scene.
+                        </p>
+                        <ul>
+                            <li>Depends on tracking, calibration, camera parameters, and depth understanding.</li>
+                            <li>Must maintain correct size, angle, and position.</li>
+                            <li>Often uses markers, feature tracking, SLAM, and sensor fusion.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Why both matter:</strong> Real-time interaction makes AR responsive, while 3D registration makes it accurate. Together they create immersion, trust, and usability.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q8">
+                        <span class="q-tag">Question 8</span>
+                        <h3>Discuss the applications of AR in different domains with examples.</h3>
+                        <p class="lead">
+                            AR is used in many domains because it can place helpful information directly into a user's field
+                            of work without forcing them to look away from the real object or activity.
+                        </p>
+                        <div class="split-grid">
+                            <div class="callout">
+                                <strong>Healthcare:</strong> Surgeons can view scan overlays during procedures, students can examine 3D anatomy, and veins or organs can be visualized for training.
+                            </div>
+                            <div class="callout">
+                                <strong>Education:</strong> Students can explore molecules, historical buildings, machines, and astronomy models as interactive 3D objects.
+                            </div>
+                            <div class="callout">
+                                <strong>Industry:</strong> Maintenance workers can receive step-by-step repair instructions on top of equipment, reducing errors and training time.
+                            </div>
+                            <div class="callout">
+                                <strong>Retail:</strong> Virtual try-on for glasses, makeup, clothes, or furniture helps customers preview products before buying.
+                            </div>
+                            <div class="callout">
+                                <strong>Navigation:</strong> Mobile maps can place arrows and location markers directly over roads and buildings.
+                            </div>
+                            <div class="callout">
+                                <strong>Entertainment:</strong> Social filters, AR games, stage effects, sports overlays, and interactive movie promotions increase engagement.
+                            </div>
+                        </div>
+                        <h4>Other important domains</h4>
+                        <ul>
+                            <li><strong>Defense:</strong> Heads-up displays and mission visualization.</li>
+                            <li><strong>Tourism:</strong> Historical site reconstruction and guided tours.</li>
+                            <li><strong>Real estate:</strong> Overlaying design options and interior previews.</li>
+                            <li><strong>Agriculture:</strong> Field data, irrigation status, or equipment support overlays.</li>
+                        </ul>
+                        <p>
+                            The best AR applications are those where context matters. When the user benefits from seeing
+                            digital data exactly where action is happening, AR becomes more effective than a separate screen or manual.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q9">
+                        <span class="q-tag">Question 9</span>
+                        <h3>Explain the challenges faced in implementing AR systems.</h3>
+                        <p class="lead">
+                            AR is powerful, but implementing it well is difficult because the system must combine sensing,
+                            graphics, optics, ergonomics, and human factors in real time.
+                        </p>
+                        <h4>Technical challenges</h4>
+                        <ul>
+                            <li><strong>Tracking accuracy:</strong> Small errors in pose estimation cause visible misalignment.</li>
+                            <li><strong>Occlusion handling:</strong> Virtual objects should appear behind real objects when appropriate, which is difficult without depth understanding.</li>
+                            <li><strong>Lighting mismatch:</strong> Digital content looks fake if shadows, reflections, or brightness do not match the real environment.</li>
+                            <li><strong>Latency:</strong> Delay between motion and display causes instability and discomfort.</li>
+                            <li><strong>Field of view limitations:</strong> Many AR displays show only a narrow digital window.</li>
+                            <li><strong>Battery and processing load:</strong> Real-time sensing and rendering consume substantial power.</li>
+                        </ul>
+                        <h4>Human and practical challenges</h4>
+                        <ul>
+                            <li><strong>Visual comfort:</strong> Eye strain, focal conflict, and poor ergonomics can reduce usability.</li>
+                            <li><strong>Privacy:</strong> Cameras and always-on sensing raise ethical and data concerns.</li>
+                            <li><strong>Safety:</strong> Poorly designed overlays may distract users in vehicles, factories, or public spaces.</li>
+                            <li><strong>Content cost:</strong> High-quality 3D models and interaction design take time and money.</li>
+                            <li><strong>Adoption:</strong> Devices can still be expensive, bulky, or socially awkward.</li>
+                        </ul>
+                        <div class="callout warn">
+                            <strong>Summary:</strong> The main AR challenge is not simply displaying graphics. It is making the graphics accurate, stable, safe, comfortable, and useful in messy real-world conditions.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-1-q10">
+                        <span class="q-tag">Question 10</span>
+                        <h3>Describe the architecture of an Augmented Reality system with a neat diagram.</h3>
+                        <p class="lead">
+                            The architecture of an AR system describes how information flows from the real environment to
+                            sensors, through processing and tracking, and finally to the display seen by the user.
+                        </p>
+                        <figure class="diagram-card">
+                            <figcaption>Neat Diagram: AR System Architecture</figcaption>
+                            <div class="flow">
+                                <div class="node">Real World Scene</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Camera and Sensors</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Tracking and Mapping</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Scene Generator</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Rendering Engine</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Display and User Interaction</div>
+                            </div>
+                        </figure>
+                        <h4>Main architectural modules</h4>
+                        <ul>
+                            <li><strong>Real-world input layer:</strong> Cameras and sensors capture images, motion, location, and environmental conditions.</li>
+                            <li><strong>Tracking layer:</strong> Determines the device pose and aligns digital content with the physical world.</li>
+                            <li><strong>Processing layer:</strong> CPU, GPU, and AI units analyze data, detect objects, and prepare output.</li>
+                            <li><strong>Scene generation layer:</strong> Produces 3D models, labels, arrows, or instructions to be shown.</li>
+                            <li><strong>Rendering layer:</strong> Adjusts scale, lighting, orientation, and perspective of the virtual objects.</li>
+                            <li><strong>Display layer:</strong> Shows the augmented view on a phone, monitor, headset, or projector.</li>
+                            <li><strong>Interaction layer:</strong> Accepts touch, gesture, gaze, or voice and feeds it back into the system.</li>
+                        </ul>
+                        <h4>Functional understanding</h4>
+                        <p>
+                            This architecture is a feedback loop. The environment is sensed continuously, the user's position
+                            is updated continuously, and the visual output is refreshed continuously. That loop is the reason
+                            AR feels interactive rather than static.
+                        </p>
+                    </article>
+                </div>
+            </details>
+
+            <details class="unit-accordion" id="unit-2">
+                <summary>
+                    <span class="unit-badge">Unit II</span>
+                    <span class="unit-title-group">
+                        <h2>AR Devices and Components</h2>
+                        <p>Hardware foundations of AR: scene generation, tracking, display systems, devices, and sensor pipelines.</p>
+                    </span>
+                    <span class="chevron" aria-hidden="true"></span>
+                </summary>
+                <div class="unit-panel">
+                    <div class="question-index">
+                        <a href="#unit-2-q1">1. Components of AR systems</a>
+                        <a href="#unit-2-q2">2. Different AR devices</a>
+                        <a href="#unit-2-q3">3. Optical See-Through HMD</a>
+                        <a href="#unit-2-q4">4. Video See-Through systems</a>
+                        <a href="#unit-2-q5">5. Projection-based AR</a>
+                        <a href="#unit-2-q6">6. Virtual Retinal Displays</a>
+                        <a href="#unit-2-q7">7. Compare AR displays</a>
+                        <a href="#unit-2-q8">8. Tracking systems</a>
+                        <a href="#unit-2-q9">9. Role of sensors</a>
+                        <a href="#unit-2-q10">10. AR hardware architecture</a>
+                    </div>
+
+                    <article class="question-card" id="unit-2-q1">
+                        <span class="q-tag">Question 1</span>
+                        <h3>Explain the components of AR systems (scene generator, tracking system, display).</h3>
+                        <p class="lead">
+                            Although AR systems contain many modules, three components are central to their operation:
+                            the scene generator, the tracking system, and the display.
+                        </p>
+                        <h4>Scene generator</h4>
+                        <p>
+                            The scene generator is the software engine that creates the digital content for the AR view.
+                            It renders 3D objects, labels, animations, highlights, or instructions based on sensor input and
+                            application logic. It also handles scale, perspective, shadows, colors, and animation updates.
+                        </p>
+                        <ul>
+                            <li>Renders digital graphics in real time.</li>
+                            <li>Uses tracking information to keep virtual objects fixed in space.</li>
+                            <li>Can simulate lighting, materials, and motion for realism.</li>
+                        </ul>
+                        <h4>Tracking system</h4>
+                        <p>
+                            The tracking system determines the position and orientation of the user's head, device, or camera.
+                            It is responsible for registration accuracy. It may use markers, feature points, inertial sensors, GPS,
+                            depth sensors, or hybrid sensor fusion.
+                        </p>
+                        <ul>
+                            <li>Calculates pose in 3D space.</li>
+                            <li>Updates continuously as the user moves.</li>
+                            <li>Ensures virtual content stays aligned with the physical scene.</li>
+                        </ul>
+                        <h4>Display</h4>
+                        <p>
+                            The display presents the final augmented view to the user. It can be a phone screen, tablet,
+                            monitor, head-mounted display, projection system, or retinal display. Good displays need brightness,
+                            clarity, low latency, and comfortable viewing.
+                        </p>
+                        <div class="callout">
+                            <strong>Relationship:</strong> The tracking system decides where content should appear, the scene generator decides what should appear, and the display decides how the user sees it.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q2">
+                        <span class="q-tag">Question 2</span>
+                        <h3>Describe different AR devices with suitable diagrams.</h3>
+                        <p class="lead">
+                            AR devices differ mainly in how they capture reality and how they present the digital layer to the user.
+                        </p>
+                        <figure class="diagram-card">
+                            <figcaption>Classification Diagram: Common AR Devices</figcaption>
+                            <div class="flow">
+                                <div class="node">Handheld Devices</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Monitor-Based Systems</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Optical See-Through HMDs</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Video See-Through HMDs</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Projection AR</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Virtual Retinal Displays</div>
+                            </div>
+                        </figure>
+                        <h4>Major AR device categories</h4>
+                        <ul>
+                            <li><strong>Handheld devices:</strong> Smartphones and tablets. They are affordable, portable, and widely used for AR apps such as games, navigation, and retail visualization.</li>
+                            <li><strong>Monitor-based systems:</strong> Use a screen and external camera to show the merged scene. Common in kiosks, industrial setups, and desktop training.</li>
+                            <li><strong>Optical See-Through HMDs:</strong> Transparent or waveguide-based glasses that let the user directly see reality while digital images are overlaid.</li>
+                            <li><strong>Video See-Through HMDs:</strong> Use cameras to capture the world, then show the combined feed inside an opaque headset.</li>
+                            <li><strong>Projection-based AR:</strong> Projects virtual content directly onto physical surfaces such as tables, walls, or machine parts.</li>
+                            <li><strong>Virtual Retinal Displays:</strong> Project light directly onto the retina for highly focused image formation.</li>
+                        </ul>
+                        <h4>How to select a device</h4>
+                        <p>
+                            Device choice depends on immersion, budget, mobility, accuracy, and user comfort. Mobile devices
+                            are easy to deploy, projection systems are useful for shared environments, and HMDs are preferred
+                            when hands-free work is important.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q3">
+                        <span class="q-tag">Question 3</span>
+                        <h3>Explain Optical See-Through HMD and its working.</h3>
+                        <p class="lead">
+                            An Optical See-Through Head-Mounted Display (OST HMD) is an AR display in which the user
+                            sees the real world directly through transparent optics while digital content is optically superimposed.
+                        </p>
+                        <h4>Working principle</h4>
+                        <ol>
+                            <li>The user looks through a transparent lens, combiner, or waveguide.</li>
+                            <li>A micro-display generates digital images.</li>
+                            <li>Optical elements reflect or guide these images into the user's eyes.</li>
+                            <li>The brain perceives real objects and virtual content together in the same field of view.</li>
+                        </ol>
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>Natural view of the real environment.</li>
+                            <li>No camera delay in the real-world view.</li>
+                            <li>Good for maintenance, surgery, logistics, and hands-free work.</li>
+                            <li>Can be lighter and more socially acceptable than fully opaque headsets.</li>
+                        </ul>
+                        <h4>Limitations</h4>
+                        <ul>
+                            <li>Limited brightness and contrast in bright outdoor environments.</li>
+                            <li>Narrow field of view in many current devices.</li>
+                            <li>Registration remains challenging because the system must match the user's eye position precisely.</li>
+                            <li>Virtual content may appear less solid because the real world always remains visible.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Examples:</strong> Google Glass introduced lightweight wearable overlay concepts, while HoloLens-style devices push optical see-through AR toward spatial computing.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q4">
+                        <span class="q-tag">Question 4</span>
+                        <h3>Discuss Video See-Through systems with advantages and disadvantages.</h3>
+                        <p class="lead">
+                            A Video See-Through (VST) system captures the real world with cameras, combines that video
+                            with virtual graphics, and presents the composite view on a screen or inside an opaque headset.
+                        </p>
+                        <h4>Working principle</h4>
+                        <ul>
+                            <li>Cameras mounted on the headset or device capture the surrounding scene.</li>
+                            <li>The system processes the video feed and overlays digital objects in real time.</li>
+                            <li>The final mixed image is shown on displays positioned in front of the user's eyes.</li>
+                        </ul>
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li><strong>Better registration:</strong> Since both real and virtual images are processed digitally, alignment can be more accurate.</li>
+                            <li><strong>Improved occlusion:</strong> The system can use depth and segmentation to hide virtual objects correctly behind real ones.</li>
+                            <li><strong>Wider display flexibility:</strong> Brightness, color, and opacity of virtual objects can be controlled more easily.</li>
+                            <li><strong>Advanced effects:</strong> Can add image correction, zoom, recording, and remote streaming.</li>
+                        </ul>
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li><strong>Latency:</strong> Camera capture and processing introduce delay, which may cause discomfort or motion sickness.</li>
+                            <li><strong>Natural vision loss:</strong> The user no longer sees reality directly; they see a digital feed of it.</li>
+                            <li><strong>Power consumption:</strong> Continuous video capture and rendering consume more energy.</li>
+                            <li><strong>Dependence on camera quality:</strong> Poor low-light performance or camera failure affects the whole experience.</li>
+                        </ul>
+                        <div class="callout compare">
+                            <strong>Key contrast:</strong> OST gives direct natural sight but weaker control over the blend. VST gives stronger digital control but introduces camera dependency and delay.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q5">
+                        <span class="q-tag">Question 5</span>
+                        <h3>Explain Projection-based AR systems in detail.</h3>
+                        <p class="lead">
+                            Projection-based AR displays digital information directly onto real surfaces instead of showing it
+                            only on a personal screen or headset. Because of this, it is often called spatial AR.
+                        </p>
+                        <h4>How it works</h4>
+                        <ol>
+                            <li>A projector casts digital images onto a wall, table, object, dashboard, or machine.</li>
+                            <li>Depth sensors or cameras analyze the shape and position of the target surface.</li>
+                            <li>The system warps and aligns the projection so the image matches the real geometry.</li>
+                            <li>User actions can be tracked for interactive responses.</li>
+                        </ol>
+                        <h4>Key components</h4>
+                        <ul>
+                            <li>Projector or pico-projector</li>
+                            <li>Tracking and surface-sensing cameras</li>
+                            <li>Processing unit for geometry correction</li>
+                            <li>Interaction module for touch, gesture, or object detection</li>
+                        </ul>
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>No wearable display is necessary.</li>
+                            <li>Supports multiple users in the same physical space.</li>
+                            <li>Feels natural in museums, classrooms, workbenches, and product demonstrations.</li>
+                        </ul>
+                        <h4>Disadvantages</h4>
+                        <ul>
+                            <li>Performance depends strongly on lighting conditions.</li>
+                            <li>Surface texture and color may distort the projection.</li>
+                            <li>Portability is limited compared with handheld AR.</li>
+                            <li>Precise calibration is required for curved or moving objects.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Examples:</strong> Projected repair instructions on industrial machines, projected keyboards, interactive museum tables, and product showcases in exhibition spaces.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q6">
+                        <span class="q-tag">Question 6</span>
+                        <h3>Describe Virtual Retinal Displays and their working principle.</h3>
+                        <p class="lead">
+                            A Virtual Retinal Display (VRD) is an advanced display technology that forms an image by scanning
+                            light directly onto the retina rather than using a conventional screen.
+                        </p>
+                        <h4>Working principle</h4>
+                        <ol>
+                            <li>A controlled light source produces a beam with modulated intensity.</li>
+                            <li>Horizontal and vertical scanners move that beam in a raster pattern.</li>
+                            <li>Imaging optics direct the scanned light toward the user's retina.</li>
+                            <li>The retina receives the light pattern, and the brain perceives it as a stable image in space.</li>
+                        </ol>
+                        <h4>Main components</h4>
+                        <ul>
+                            <li>Light source</li>
+                            <li>Modulator</li>
+                            <li>Scanning mirrors or scanners</li>
+                            <li>Optical focusing system</li>
+                            <li>Control electronics</li>
+                        </ul>
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>High image sharpness and brightness.</li>
+                            <li>Potentially wide field of view.</li>
+                            <li>Compact design because a bulky display panel is not required.</li>
+                            <li>Good readability when implemented correctly.</li>
+                        </ul>
+                        <h4>Limitations</h4>
+                        <ul>
+                            <li>Optical alignment is complex.</li>
+                            <li>Safety and calibration standards are critical.</li>
+                            <li>Cost and product maturity have limited mainstream adoption.</li>
+                        </ul>
+                        <p>
+                            VRD represents an important direction for future AR because it aims to deliver high-quality visuals
+                            in small wearable systems, though it is still less common than standard optical or video-based displays.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q7">
+                        <span class="q-tag">Question 7</span>
+                        <h3>Compare different AR display technologies.</h3>
+                        <p class="lead">
+                            AR display technologies are compared based on realism, immersion, cost, portability, brightness,
+                            latency, and how directly the user sees the physical world.
+                        </p>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Technology</th>
+                                        <th>How it shows AR</th>
+                                        <th>Main strengths</th>
+                                        <th>Main limitations</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Optical See-Through HMD</td>
+                                        <td>Transparent optics overlay digital images over direct real vision.</td>
+                                        <td>Natural sight, low real-world latency, hands-free.</td>
+                                        <td>Limited brightness, narrow FoV, difficult registration.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Video See-Through HMD</td>
+                                        <td>Camera feed plus graphics shown on internal displays.</td>
+                                        <td>Better occlusion, more accurate blending, controllable visuals.</td>
+                                        <td>Camera lag, higher power use, loss of direct vision.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Monitor-Based</td>
+                                        <td>Camera captures scene and display shows merged output on screen.</td>
+                                        <td>Low cost, easy deployment, familiar interface.</td>
+                                        <td>Lower immersion, indirect viewing only.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Projection-Based</td>
+                                        <td>Projects graphics directly onto physical surfaces.</td>
+                                        <td>No headset, multi-user, natural collaboration.</td>
+                                        <td>Depends on surface and lighting, limited portability.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Virtual Retinal Display</td>
+                                        <td>Scans light directly onto the retina.</td>
+                                        <td>Potentially bright, sharp, compact.</td>
+                                        <td>Complex optics, high cost, niche adoption.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h4>Conclusion</h4>
+                        <p>
+                            There is no universal best display. Mobile and monitor-based AR suit mass deployment, projection
+                            suits shared spaces, OST suits hands-free work, VST suits precise digital blending, and VRD points to
+                            future high-performance wearable displays.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q8">
+                        <span class="q-tag">Question 8</span>
+                        <h3>Explain the working of tracking systems used in AR.</h3>
+                        <p class="lead">
+                            Tracking systems are responsible for knowing where the user or device is and how it is oriented.
+                            This is necessary so virtual objects stay in the correct place relative to the real world.
+                        </p>
+                        <h4>Tracking workflow</h4>
+                        <ol>
+                            <li>Sensors capture movement, images, and environmental cues.</li>
+                            <li>The system extracts features such as markers, corners, planes, or motion patterns.</li>
+                            <li>Pose estimation algorithms compute position and orientation.</li>
+                            <li>The renderer uses this pose to place and update digital content.</li>
+                        </ol>
+                        <h4>Types of AR tracking</h4>
+                        <ul>
+                            <li><strong>Marker-based tracking:</strong> Uses predefined images or patterns for pose reference.</li>
+                            <li><strong>Natural feature tracking:</strong> Uses edges, textures, and visual landmarks in the environment.</li>
+                            <li><strong>SLAM-based tracking:</strong> Builds a map while locating the device within it.</li>
+                            <li><strong>Inertial tracking:</strong> Uses gyroscopes and accelerometers for rapid motion estimation.</li>
+                            <li><strong>Location-based tracking:</strong> Uses GPS, compass, and orientation for outdoor AR.</li>
+                            <li><strong>Hybrid tracking:</strong> Combines multiple methods for better accuracy and robustness.</li>
+                        </ul>
+                        <h4>Requirements of a good tracking system</h4>
+                        <ul>
+                            <li>High accuracy</li>
+                            <li>Low drift</li>
+                            <li>Low latency</li>
+                            <li>Robust performance under different lighting and motion conditions</li>
+                        </ul>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q9">
+                        <span class="q-tag">Question 9</span>
+                        <h3>Discuss the role of sensors in AR devices.</h3>
+                        <p class="lead">
+                            Sensors make AR possible because they provide the data needed to understand motion, location,
+                            orientation, distance, lighting, and user intent.
+                        </p>
+                        <h4>Major sensors and their roles</h4>
+                        <ul>
+                            <li><strong>Camera:</strong> Captures the real scene for object detection, marker tracking, and feature extraction.</li>
+                            <li><strong>Accelerometer:</strong> Measures linear movement and helps estimate motion.</li>
+                            <li><strong>Gyroscope:</strong> Measures rotation for stable orientation tracking.</li>
+                            <li><strong>Magnetometer/compass:</strong> Provides direction relative to the Earth's magnetic field.</li>
+                            <li><strong>GPS:</strong> Gives location for outdoor and location-based AR.</li>
+                            <li><strong>Depth sensor or LiDAR:</strong> Measures surface distance and improves occlusion and 3D mapping.</li>
+                            <li><strong>Light sensor:</strong> Helps adapt display brightness and estimate scene lighting.</li>
+                            <li><strong>Microphone:</strong> Enables voice interaction and sound-triggered experiences.</li>
+                            <li><strong>Eye tracker:</strong> Supports gaze interaction and rendering optimization in advanced headsets.</li>
+                        </ul>
+                        <h4>Why sensor fusion matters</h4>
+                        <p>
+                            One sensor alone is not enough. Cameras may struggle in low light, GPS may be weak indoors,
+                            and inertial sensors may drift over time. AR devices therefore fuse data from several sensors to
+                            improve reliability, speed, and accuracy.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-2-q10">
+                        <span class="q-tag">Question 10</span>
+                        <h3>Explain the complete architecture of AR hardware systems.</h3>
+                        <p class="lead">
+                            AR hardware architecture refers to the physical subsystems that capture the environment, process
+                            information, and present the augmented output to the user.
+                        </p>
+                        <figure class="diagram-card">
+                            <figcaption>Neat Diagram: AR Hardware Architecture</figcaption>
+                            <div class="flow">
+                                <div class="node">Cameras and Sensors</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Sensor Fusion Unit</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">CPU / GPU / AI Processor</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Memory and Connectivity</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Display / Audio / Haptics</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">User</div>
+                            </div>
+                        </figure>
+                        <h4>Hardware blocks</h4>
+                        <ul>
+                            <li><strong>Input block:</strong> Cameras, microphones, GPS, IMU, depth sensors, and compasses gather environmental and motion data.</li>
+                            <li><strong>Fusion and control block:</strong> Combines sensor signals, filters noise, and estimates stable pose.</li>
+                            <li><strong>Compute block:</strong> CPU manages logic, GPU renders graphics, and AI units accelerate vision tasks.</li>
+                            <li><strong>Memory/storage:</strong> Stores application data, 3D assets, maps, and temporary sensor buffers.</li>
+                            <li><strong>Communication block:</strong> Wi-Fi, Bluetooth, or cellular networks support cloud content and collaboration.</li>
+                            <li><strong>Output block:</strong> Screen, HMD optics, speakers, and haptic modules deliver the final AR experience.</li>
+                            <li><strong>Power block:</strong> Battery and power management systems regulate energy consumption.</li>
+                        </ul>
+                        <h4>Functional view</h4>
+                        <p>
+                            In handheld systems, most hardware is integrated into one mobile device. In wearable systems,
+                            the display may sit on the head while compute resources are either onboard or external. In both cases,
+                            the goal is the same: gather data quickly, compute accurately, and display without delay.
+                        </p>
+                    </article>
+                </div>
+            </details>
+
+            <details class="unit-accordion" id="unit-3">
+                <summary>
+                    <span class="unit-badge">Unit III</span>
+                    <span class="unit-title-group">
+                        <h2>Introduction to Virtual Reality</h2>
+                        <p>VR foundations: immersion, presence, human perception, devices, and system-level interaction.</p>
+                    </span>
+                    <span class="chevron" aria-hidden="true"></span>
+                </summary>
+                <div class="unit-panel">
+                    <div class="question-index">
+                        <a href="#unit-3-q1">1. Definition and key elements</a>
+                        <a href="#unit-3-q2">2. History of VR</a>
+                        <a href="#unit-3-q3">3. Working of VR system</a>
+                        <a href="#unit-3-q4">4. Physiology and perception</a>
+                        <a href="#unit-3-q5">5. Immersion and presence</a>
+                        <a href="#unit-3-q6">6. VR input devices</a>
+                        <a href="#unit-3-q7">7. VR output devices</a>
+                        <a href="#unit-3-q8">8. Interaction techniques</a>
+                        <a href="#unit-3-q9">9. Motion and head tracking</a>
+                        <a href="#unit-3-q10">10. AR vs VR</a>
+                    </div>
+
+                    <article class="question-card" id="unit-3-q1">
+                        <span class="q-tag">Question 1</span>
+                        <h3>Define Virtual Reality and explain its key elements.</h3>
+                        <p class="lead">
+                            Virtual Reality (VR) is a computer-generated, interactive, three-dimensional environment that
+                            gives the user the feeling of being physically present in a synthetic world. It uses headsets, audio,
+                            tracking, and interaction devices to replace ordinary surroundings with a simulated experience.
+                        </p>
+                        <h4>Definition in simple terms</h4>
+                        <p>
+                            VR does not merely show 3D graphics on a screen. It places the user inside the simulation by
+                            updating the view according to head or body movement and by providing surrounding sensory feedback.
+                        </p>
+                        <h4>Key elements of VR</h4>
+                        <ul>
+                            <li><strong>Immersion:</strong> The technical ability of the system to surround the user with a synthetic environment.</li>
+                            <li><strong>Presence:</strong> The psychological feeling of "being there" inside the virtual world.</li>
+                            <li><strong>Interactivity:</strong> Users can move, select, manipulate, and respond to virtual objects.</li>
+                            <li><strong>Real-time feedback:</strong> Visuals, audio, and controls update immediately as the user moves.</li>
+                            <li><strong>Sensory output:</strong> VR uses visual, auditory, and sometimes haptic cues.</li>
+                            <li><strong>Hardware and software integration:</strong> Headsets, controllers, tracking systems, and graphics engines work together.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Examples:</strong> Flight simulators, VR classrooms, exposure therapy systems, design walk-throughs, and immersive games such as Half-Life: Alyx.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q2">
+                        <span class="q-tag">Question 2</span>
+                        <h3>Describe the history and evolution of Virtual Reality.</h3>
+                        <p class="lead">
+                            The evolution of VR spans decades of sensory experiments, military simulation, research labs,
+                            and finally consumer products.
+                        </p>
+                        <h4>Important milestones</h4>
+                        <ul>
+                            <li><strong>1956:</strong> Morton Heilig created Sensorama, a multisensory machine with visuals, sound, vibration, and even smell.</li>
+                            <li><strong>1960:</strong> Heilig patented the Telesphere Mask, one of the earliest head-mounted display concepts.</li>
+                            <li><strong>1968:</strong> Ivan Sutherland built the first computer-linked HMD.</li>
+                            <li><strong>1970s:</strong> Simulators and interactive computer graphics advanced in research and defense.</li>
+                            <li><strong>1980s:</strong> Jaron Lanier popularized the term "Virtual Reality" and developed data gloves and immersive systems.</li>
+                            <li><strong>1990s:</strong> CAVE systems, arcade VR, medical visualization, and industrial simulations grew, though hardware remained expensive.</li>
+                            <li><strong>2012:</strong> Oculus Rift revived consumer interest through low-cost, high-quality headset design.</li>
+                            <li><strong>2014:</strong> Facebook acquired Oculus, signaling mainstream commercial attention.</li>
+                            <li><strong>2016:</strong> Major consumer headsets such as HTC Vive, PlayStation VR, and Oculus Rift launched widely.</li>
+                            <li><strong>2020s:</strong> Standalone headsets, hand tracking, better displays, mixed-reality modes, and metaverse-style platforms expanded the field.</li>
+                        </ul>
+                        <h4>Evolutionary trend</h4>
+                        <p>
+                            Early VR focused on proof of concept. Later VR focused on simulation and training. Today VR combines
+                            mobility, affordability, higher resolution, and smarter interaction, which has made it useful in education,
+                            medicine, entertainment, remote collaboration, and engineering.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q3">
+                        <span class="q-tag">Question 3</span>
+                        <h3>Explain the working of a Virtual Reality system.</h3>
+                        <p class="lead">
+                            A VR system works through a continuous loop of sensing, simulation, rendering, and feedback.
+                            The system tracks the user's movement, updates the virtual world, and displays the new view almost instantly.
+                        </p>
+                        <figure class="diagram-card">
+                            <figcaption>Neat Diagram: VR Working Loop</figcaption>
+                            <div class="flow">
+                                <div class="node">User Movement</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Tracking Sensors</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">VR Engine and Simulation</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Graphics and Audio Rendering</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">Headset / Speakers / Haptics</div>
+                                <div class="arrow">&rarr;</div>
+                                <div class="node">User Perception</div>
+                            </div>
+                        </figure>
+                        <h4>Working steps</h4>
+                        <ol>
+                            <li><strong>Tracking:</strong> Sensors detect head position, hand movement, controller input, or full-body motion.</li>
+                            <li><strong>Processing:</strong> The VR engine updates object positions, physics, and world state based on that input.</li>
+                            <li><strong>Rendering:</strong> Separate images are generated for each eye to create stereoscopic depth.</li>
+                            <li><strong>Audio generation:</strong> 3D sound is adjusted based on head orientation and environment.</li>
+                            <li><strong>Display:</strong> The headset shows the images at high refresh rates to reduce motion sickness.</li>
+                            <li><strong>Feedback:</strong> Haptic devices or controllers provide tactile responses, completing the loop.</li>
+                        </ol>
+                        <h4>Core requirement</h4>
+                        <p>
+                            The entire loop must run with very low latency. If tracking and display are slow, the user notices a mismatch
+                            between movement and vision, which can break immersion and create discomfort.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q4">
+                        <span class="q-tag">Question 4</span>
+                        <h3>Discuss human physiology and perception in VR.</h3>
+                        <p class="lead">
+                            VR is effective because it interacts directly with human sensory systems. Understanding physiology and
+                            perception is therefore essential for designing comfortable and believable VR experiences.
+                        </p>
+                        <h4>Visual system</h4>
+                        <p>
+                            Human vision uses depth cues such as stereopsis, motion parallax, shading, and perspective. VR headsets
+                            present separate images to each eye to simulate binocular depth. The system must also update viewpoint
+                            correctly as the head moves.
+                        </p>
+                        <h4>Auditory system</h4>
+                        <p>
+                            Humans locate sound using direction, distance, loudness, and reverberation. VR uses spatial audio and
+                            head-related transfer functions to make sounds appear to come from specific places in the environment.
+                        </p>
+                        <h4>Vestibular and proprioceptive systems</h4>
+                        <p>
+                            The vestibular system senses balance and acceleration, while proprioception gives awareness of body position.
+                            If the eyes say the user is moving but the inner ear says the body is still, cybersickness may occur.
+                        </p>
+                        <h4>Haptic perception</h4>
+                        <p>
+                            Touch, vibration, resistance, and texture all contribute to realism. Even simple controller vibration can
+                            improve the feeling of contact with virtual objects.
+                        </p>
+                        <div class="callout warn">
+                            <strong>Design insight:</strong> Good VR works when visual, auditory, haptic, and motion cues support each other. Poorly synchronized cues reduce presence and can cause discomfort.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q5">
+                        <span class="q-tag">Question 5</span>
+                        <h3>Explain immersion and presence in VR environments.</h3>
+                        <p class="lead">
+                            Immersion and presence are related but not identical. Immersion is the capability of the system;
+                            presence is the experience felt by the user.
+                        </p>
+                        <h4>Immersion</h4>
+                        <p>
+                            Immersion refers to the technical quality of the VR system that surrounds and isolates the user.
+                            It depends on factors such as stereoscopic display, field of view, head tracking, refresh rate,
+                            spatial audio, and haptic feedback.
+                        </p>
+                        <h4>Presence</h4>
+                        <p>
+                            Presence is the psychological sensation of actually being inside the virtual world. A user can say,
+                            "I know this is simulated, but it feels real enough that I react naturally." Presence is influenced by
+                            immersion, but also by content quality, interactivity, realism, and emotional engagement.
+                        </p>
+                        <h4>Factors that improve both</h4>
+                        <ul>
+                            <li>High-quality graphics and stable tracking</li>
+                            <li>Low latency and high refresh rate</li>
+                            <li>Natural movement and interaction</li>
+                            <li>Believable sound design</li>
+                            <li>Consistent world behavior and physics</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Short distinction:</strong> Immersion is what the system delivers; presence is what the user feels.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q6">
+                        <span class="q-tag">Question 6</span>
+                        <h3>Describe VR input devices with examples.</h3>
+                        <p class="lead">
+                            Input devices allow users to control movement, select objects, communicate, and manipulate the virtual world.
+                        </p>
+                        <h4>Main VR input devices</h4>
+                        <ul>
+                            <li><strong>Hand controllers:</strong> Devices such as Oculus Touch and Valve Index controllers provide buttons, triggers, and motion sensing.</li>
+                            <li><strong>Hand tracking systems:</strong> Cameras detect finger and hand motion without physical controllers.</li>
+                            <li><strong>Data gloves:</strong> Gloves sense finger positions and may also provide haptic feedback.</li>
+                            <li><strong>Motion tracking sensors:</strong> Capture body movement for sports, fitness, training, and motion capture.</li>
+                            <li><strong>Eye trackers:</strong> Detect gaze direction for selection, attention analysis, or foveated rendering.</li>
+                            <li><strong>Voice input:</strong> Useful for commands in training, accessibility, and hands-busy situations.</li>
+                            <li><strong>Locomotion devices:</strong> Treadmills or room-scale tracking support navigation in large virtual environments.</li>
+                        </ul>
+                        <h4>Examples of use</h4>
+                        <ul>
+                            <li>Controllers are used in VR gaming and object manipulation.</li>
+                            <li>Data gloves support medical training and detailed industrial simulation.</li>
+                            <li>Full-body tracking is used in sports coaching, animation, and rehabilitation.</li>
+                        </ul>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q7">
+                        <span class="q-tag">Question 7</span>
+                        <h3>Explain VR output devices (visual, aural, haptic).</h3>
+                        <p class="lead">
+                            VR output devices create the sensory side of the experience. They tell the user what the virtual
+                            world looks like, sounds like, and sometimes feels like.
+                        </p>
+                        <h4>Visual output devices</h4>
+                        <ul>
+                            <li><strong>Head-Mounted Displays:</strong> The most common VR output device. They provide stereo images, wide field of view, and head-coupled perspective.</li>
+                            <li><strong>CAVE systems:</strong> Room-sized projection environments used in research and industrial review.</li>
+                            <li><strong>Large simulators:</strong> Used in aviation, defense, and specialized training.</li>
+                        </ul>
+                        <h4>Aural output devices</h4>
+                        <ul>
+                            <li>Headphones or speakers deliver 3D spatial audio.</li>
+                            <li>Binaural and directional sound improves awareness of object location and movement.</li>
+                            <li>Ambient sounds support mood, realism, and orientation.</li>
+                        </ul>
+                        <h4>Haptic output devices</h4>
+                        <ul>
+                            <li><strong>Vibration controllers:</strong> Simple tactile feedback for impact or confirmation.</li>
+                            <li><strong>Gloves:</strong> Provide finger-level tactile cues or resistance.</li>
+                            <li><strong>Vests or suits:</strong> Deliver body-level feedback for simulations and games.</li>
+                            <li><strong>Force-feedback devices:</strong> Simulate weight, resistance, or collision in professional training.</li>
+                        </ul>
+                        <p>
+                            Together, these devices transform VR from a visual display into a multisensory environment.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q8">
+                        <span class="q-tag">Question 8</span>
+                        <h3>Discuss interaction techniques in VR systems.</h3>
+                        <p class="lead">
+                            Interaction techniques determine how users move, select, manipulate, communicate, and complete tasks inside VR.
+                        </p>
+                        <h4>Common interaction techniques</h4>
+                        <ul>
+                            <li><strong>Direct manipulation:</strong> Users grab, move, rotate, and scale objects with their hands or controllers.</li>
+                            <li><strong>Ray casting:</strong> A virtual pointer extends from the hand or controller to select distant objects.</li>
+                            <li><strong>Teleportation:</strong> A common locomotion method that helps reduce motion sickness.</li>
+                            <li><strong>Gesture interaction:</strong> Hand or body gestures are recognized as commands.</li>
+                            <li><strong>Gaze-based interaction:</strong> The system selects items based on where the user looks.</li>
+                            <li><strong>Voice interaction:</strong> Users speak commands or questions, useful in training and accessibility scenarios.</li>
+                            <li><strong>Menu and panel interaction:</strong> Floating user interfaces allow settings, tool selection, and information access.</li>
+                        </ul>
+                        <h4>Design considerations</h4>
+                        <p>
+                            VR interaction should feel natural, reduce fatigue, avoid excessive hand travel, and maintain
+                            spatial consistency. The best method depends on task type: for example, teleportation works well
+                            for exploration, while direct manipulation is better for assembly training or sculpting.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q9">
+                        <span class="q-tag">Question 9</span>
+                        <h3>Explain motion tracking and head tracking in VR.</h3>
+                        <p class="lead">
+                            Motion tracking and head tracking allow VR systems to update the user's perspective and body presence
+                            in real time, which is essential for immersion and comfort.
+                        </p>
+                        <h4>Head tracking</h4>
+                        <p>
+                            Head tracking detects the position and orientation of the user's head. As the user looks left, right,
+                            up, down, forward, or backward, the VR system changes the camera viewpoint accordingly.
+                        </p>
+                        <ul>
+                            <li>Uses gyroscopes, accelerometers, cameras, or external base stations.</li>
+                            <li>Supports 3 Degrees of Freedom or full 6 Degrees of Freedom depending on the system.</li>
+                            <li>Must be accurate and low-latency to prevent discomfort.</li>
+                        </ul>
+                        <h4>Motion tracking</h4>
+                        <p>
+                            Motion tracking extends beyond the head to include hands, body, controllers, and sometimes eyes.
+                            It allows realistic gestures, walking, training tasks, and full-body representation in the virtual space.
+                        </p>
+                        <ul>
+                            <li><strong>Inside-out tracking:</strong> Built-in headset cameras detect movement relative to the room.</li>
+                            <li><strong>Outside-in tracking:</strong> External sensors or cameras observe the headset and controllers.</li>
+                            <li><strong>Full-body tracking:</strong> Additional trackers or suits capture torso, leg, and arm movement.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Importance:</strong> Head tracking keeps the world stable around the user, and motion tracking makes interaction believable and precise.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-3-q10">
+                        <span class="q-tag">Question 10</span>
+                        <h3>Compare AR and VR with real-world examples.</h3>
+                        <p class="lead">
+                            AR and VR are both immersive technologies, but they serve different goals. One enhances reality; the other replaces it.
+                        </p>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Aspect</th>
+                                        <th>Augmented Reality</th>
+                                        <th>Virtual Reality</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>User environment</td>
+                                        <td>The real world remains visible.</td>
+                                        <td>The real world is blocked out by a simulated environment.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Main goal</td>
+                                        <td>Add useful digital information to reality.</td>
+                                        <td>Create immersion inside a fully artificial world.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Typical devices</td>
+                                        <td>Phones, tablets, smart glasses.</td>
+                                        <td>VR headsets, controllers, haptic devices.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Best for</td>
+                                        <td>Navigation, repair guidance, shopping preview, live overlays.</td>
+                                        <td>Simulation, gaming, therapy, virtual travel, skill training.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Real-world examples</td>
+                                        <td>Pokemon Go, IKEA Place, AR maintenance manuals, live sports graphics.</td>
+                                        <td>Flight simulators, surgical rehearsal, Meta Quest gaming, VR exposure therapy.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <h4>Practical understanding</h4>
+                        <p>
+                            If a technician must still see the real machine, AR is the better choice. If a pilot trainee must safely
+                            experience a dangerous or expensive situation, VR is the better choice. That is why the two technologies
+                            often support different phases of the same workflow.
+                        </p>
+                    </article>
+                </div>
+            </details>
+
+            <details class="unit-accordion" id="unit-4">
+                <summary>
+                    <span class="unit-badge">Unit IV</span>
+                    <span class="unit-title-group">
+                        <h2>Representing the Virtual World</h2>
+                        <p>How VR worlds are modeled, rendered, sounded, felt, and assembled into convincing environments.</p>
+                    </span>
+                    <span class="chevron" aria-hidden="true"></span>
+                </summary>
+                <div class="unit-panel">
+                    <div class="question-index">
+                        <a href="#unit-4-q1">1. Virtual world representation</a>
+                        <a href="#unit-4-q2">2. Visual representation</a>
+                        <a href="#unit-4-q3">3. Aural representation</a>
+                        <a href="#unit-4-q4">4. Haptic representation</a>
+                        <a href="#unit-4-q5">5. 3D modeling techniques</a>
+                        <a href="#unit-4-q6">6. Rendering techniques</a>
+                        <a href="#unit-4-q7">7. Texture and lighting</a>
+                        <a href="#unit-4-q8">8. Spatial audio</a>
+                        <a href="#unit-4-q9">9. Multi-sensory integration</a>
+                        <a href="#unit-4-q10">10. Creating a virtual environment</a>
+                    </div>
+
+                    <article class="question-card" id="unit-4-q1">
+                        <span class="q-tag">Question 1</span>
+                        <h3>Explain the concept of virtual world representation in VR.</h3>
+                        <p class="lead">
+                            Virtual world representation is the process of describing a digital environment so that a computer
+                            can display it, simulate it, and allow users to interact with it convincingly.
+                        </p>
+                        <figure class="diagram-card">
+                            <figcaption>Neat Diagram: Representation of a Virtual World</figcaption>
+                            <div class="flow">
+                                <div class="node">User</div>
+                                <div class="arrow">&harr;</div>
+                                <div class="node">Avatar / Viewpoint</div>
+                                <div class="arrow">&harr;</div>
+                                <div class="node">Virtual Objects and Space</div>
+                                <div class="arrow">&harr;</div>
+                                <div class="node">Behaviors / Physics / Rules</div>
+                            </div>
+                        </figure>
+                        <h4>What is represented</h4>
+                        <ul>
+                            <li>Geometry of objects and spaces</li>
+                            <li>Textures, colors, materials, and lighting behavior</li>
+                            <li>Spatial relationships such as distance, scale, and orientation</li>
+                            <li>Avatars and interactive elements</li>
+                            <li>Physics, animation, and event logic</li>
+                        </ul>
+                        <h4>Why representation matters</h4>
+                        <p>
+                            A virtual world is more than a collection of 3D models. It must behave like an environment. Users
+                            need to understand where they are, what objects mean, what can be touched, and how the world responds.
+                            Proper representation therefore combines scene modeling with interaction rules and simulation logic.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q2">
+                        <span class="q-tag">Question 2</span>
+                        <h3>Describe visual representation techniques in VR.</h3>
+                        <p class="lead">
+                            Visual representation techniques are the methods used to create the appearance of the virtual world so
+                            that users can perceive space, depth, objects, and motion naturally.
+                        </p>
+                        <h4>Important visual techniques</h4>
+                        <ul>
+                            <li><strong>Polygonal modeling:</strong> Builds objects from vertices, edges, and surfaces.</li>
+                            <li><strong>Stereoscopic rendering:</strong> Two slightly different images create depth for the left and right eyes.</li>
+                            <li><strong>Perspective projection:</strong> Simulates how distant objects appear smaller.</li>
+                            <li><strong>Shading and shadows:</strong> Improve realism and shape perception.</li>
+                            <li><strong>Level of Detail (LOD):</strong> Uses simpler models for distant objects to save performance.</li>
+                            <li><strong>Animation:</strong> Gives life to objects, avatars, and environmental effects.</li>
+                            <li><strong>Heads-up or diegetic interfaces:</strong> Present information without breaking immersion.</li>
+                        </ul>
+                        <h4>Purpose of visual representation</h4>
+                        <p>
+                            The goal is not only beauty but clarity. Users must quickly understand shape, scale, direction,
+                            and affordance. In medical VR, for example, accurate visuals support training and planning. In games,
+                            stylized visuals may be more useful than photorealism if they improve readability and comfort.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q3">
+                        <span class="q-tag">Question 3</span>
+                        <h3>Explain aural (audio) representation in VR systems.</h3>
+                        <p class="lead">
+                            Aural representation means modeling sound in the virtual environment so that users hear the world
+                            as if they were inside it.
+                        </p>
+                        <h4>Components of aural representation</h4>
+                        <ul>
+                            <li><strong>Ambient sound:</strong> Background audio such as wind, crowd noise, water, or machine hum.</li>
+                            <li><strong>Event-based sound:</strong> Footsteps, doors opening, object collisions, speech, or alarms.</li>
+                            <li><strong>Spatial sound:</strong> Directional audio that changes based on user position and head rotation.</li>
+                            <li><strong>Environmental effects:</strong> Echo, reverberation, occlusion, and distance attenuation.</li>
+                        </ul>
+                        <h4>Why it is important</h4>
+                        <p>
+                            Sound improves orientation, realism, emotion, and attention. It tells the user where something is
+                            happening even when it is outside their field of view. Aural cues also strengthen presence by making
+                            the virtual world feel alive rather than silent and artificial.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q4">
+                        <span class="q-tag">Question 4</span>
+                        <h3>Discuss haptic representation and force feedback systems.</h3>
+                        <p class="lead">
+                            Haptic representation refers to the simulation of touch in VR. It helps users feel surfaces, impacts,
+                            resistance, and object interaction rather than only seeing them.
+                        </p>
+                        <h4>Forms of haptic feedback</h4>
+                        <ul>
+                            <li><strong>Tactile feedback:</strong> Vibration, pressure, or texture-like sensations on the skin.</li>
+                            <li><strong>Kinesthetic feedback:</strong> Resistance or force that affects muscles and joints.</li>
+                            <li><strong>Thermal or skin stretch feedback:</strong> Advanced systems can simulate heat, tension, or deformation.</li>
+                        </ul>
+                        <h4>Force feedback systems</h4>
+                        <p>
+                            Force feedback devices actively resist movement to simulate the feeling of pushing, pulling, or lifting.
+                            This is especially useful in surgical simulation, mechanical training, and high-precision virtual prototyping.
+                        </p>
+                        <ul>
+                            <li>Haptic gloves for finger feedback</li>
+                            <li>Robotic arms or stylus devices for precise force simulation</li>
+                            <li>Vests and suits for broader body sensation</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Importance:</strong> Haptics increases realism, supports motor learning, and improves task memory because users experience action rather than just observe it.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q5">
+                        <span class="q-tag">Question 5</span>
+                        <h3>Explain 3D modeling techniques used in VR.</h3>
+                        <p class="lead">
+                            3D modeling is the process of creating the shapes and structures that form the virtual environment.
+                            Different techniques are used depending on whether the target is mechanical accuracy, artistic realism, or speed.
+                        </p>
+                        <h4>Common 3D modeling techniques</h4>
+                        <ul>
+                            <li><strong>Polygonal modeling:</strong> The most common technique for real-time VR content.</li>
+                            <li><strong>NURBS and surface modeling:</strong> Useful for smooth curves in product design and CAD-like environments.</li>
+                            <li><strong>Sculpting:</strong> Used for organic forms such as characters, creatures, and terrain.</li>
+                            <li><strong>Procedural modeling:</strong> Generates structures such as cities, landscapes, or repeated assets automatically.</li>
+                            <li><strong>Photogrammetry:</strong> Converts photographs of real objects or spaces into 3D models.</li>
+                            <li><strong>CAD conversion:</strong> Imports industrial engineering models into VR review environments.</li>
+                        </ul>
+                        <h4>Associated tasks</h4>
+                        <ul>
+                            <li>UV mapping for textures</li>
+                            <li>Rigging for animation</li>
+                            <li>Optimization for frame rate</li>
+                            <li>Collision mesh generation for interaction</li>
+                        </ul>
+                        <p>
+                            In VR, models must look convincing but also remain efficient enough for real-time rendering.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q6">
+                        <span class="q-tag">Question 6</span>
+                        <h3>Describe rendering techniques in virtual environments.</h3>
+                        <p class="lead">
+                            Rendering is the process of turning a mathematical scene description into images that the user sees.
+                            In VR, rendering must be both realistic and fast.
+                        </p>
+                        <h4>Important rendering techniques</h4>
+                        <ul>
+                            <li><strong>Real-time rasterization:</strong> The most common approach in VR due to its speed.</li>
+                            <li><strong>Forward and deferred rendering:</strong> Different pipelines for handling lighting and transparency.</li>
+                            <li><strong>Occlusion culling:</strong> Hidden objects are not rendered, saving computation.</li>
+                            <li><strong>Level of Detail:</strong> Lower complexity versions are rendered when objects are far away.</li>
+                            <li><strong>Foveated rendering:</strong> High detail is shown where the user is looking, with reduced detail elsewhere.</li>
+                            <li><strong>Ray tracing or hybrid rendering:</strong> Used selectively for improved reflections and lighting, though it is more demanding.</li>
+                        </ul>
+                        <h4>Why rendering is critical in VR</h4>
+                        <p>
+                            VR requires high frame rates because each frame is displayed to both eyes and must respond to head
+                            motion quickly. Poor rendering performance leads directly to stutter, discomfort, and loss of immersion.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q7">
+                        <span class="q-tag">Question 7</span>
+                        <h3>Explain texture mapping and lighting in VR.</h3>
+                        <p class="lead">
+                            Texture mapping and lighting are essential for making virtual objects appear believable, readable, and spatially clear.
+                        </p>
+                        <h4>Texture mapping</h4>
+                        <p>
+                            Texture mapping applies image data to the surface of a 3D model. A plain polygon becomes wood, metal,
+                            skin, fabric, or stone when textures are mapped onto it. UV coordinates define how the texture wraps around the model.
+                        </p>
+                        <ul>
+                            <li>Diffuse maps add base color.</li>
+                            <li>Normal maps create the illusion of fine surface detail.</li>
+                            <li>Roughness and metallic maps support physically based rendering.</li>
+                            <li>Opacity and emissive maps add transparency or glow effects.</li>
+                        </ul>
+                        <h4>Lighting</h4>
+                        <p>
+                            Lighting shows form, mood, and depth. In VR, it also helps the user judge distance and object shape.
+                            Common methods include ambient, directional, point, and spot lighting. Lighting may be baked for performance
+                            or calculated dynamically for interaction.
+                        </p>
+                        <div class="callout">
+                            <strong>Exam point:</strong> Good textures make surfaces readable, while good lighting makes the environment believable and navigable.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q8">
+                        <span class="q-tag">Question 8</span>
+                        <h3>Discuss spatial audio and its importance in VR.</h3>
+                        <p class="lead">
+                            Spatial audio is sound that is positioned in three-dimensional space so users can perceive where it is coming from.
+                            It is one of the strongest tools for realism in VR.
+                        </p>
+                        <h4>How spatial audio works</h4>
+                        <ul>
+                            <li>Uses directional cues and head-related transfer functions.</li>
+                            <li>Updates sound position as the user turns the head or moves in the scene.</li>
+                            <li>Simulates distance, reflection, echo, and obstruction.</li>
+                        </ul>
+                        <h4>Importance in VR</h4>
+                        <ul>
+                            <li>Improves orientation and navigation.</li>
+                            <li>Alerts users to events outside their current visual focus.</li>
+                            <li>Strengthens emotional response and atmosphere.</li>
+                            <li>Makes social VR and conversation more natural.</li>
+                            <li>Supports training where sound cues are part of decision-making.</li>
+                        </ul>
+                        <p>
+                            A visually rich VR scene can still feel artificial if sound is flat. Spatial audio adds the sense that
+                            the world surrounds the user, not just the eyes.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q9">
+                        <span class="q-tag">Question 9</span>
+                        <h3>Discuss multi-sensory integration in VR systems.</h3>
+                        <p class="lead">
+                            Multi-sensory integration means combining visual, auditory, haptic, and motion-related cues into one coherent experience.
+                        </p>
+                        <h4>Why it matters</h4>
+                        <p>
+                            The human brain naturally merges information from multiple senses. VR becomes convincing when the same event is seen,
+                            heard, and felt in synchronized form. For example, if a virtual ball hits a wall, the user should see impact,
+                            hear the sound, and possibly feel vibration at the same moment.
+                        </p>
+                        <h4>Benefits</h4>
+                        <ul>
+                            <li>Stronger presence and immersion</li>
+                            <li>Better memory and learning retention</li>
+                            <li>Improved situational awareness</li>
+                            <li>Greater realism in training and simulation</li>
+                        </ul>
+                        <h4>Challenges</h4>
+                        <ul>
+                            <li>Synchronization errors reduce credibility.</li>
+                            <li>Mismatch between senses can create cybersickness.</li>
+                            <li>More sensory channels increase hardware complexity and computational demand.</li>
+                        </ul>
+                    </article>
+
+                    <article class="question-card" id="unit-4-q10">
+                        <span class="q-tag">Question 10</span>
+                        <h3>Describe the process of creating a virtual environment.</h3>
+                        <p class="lead">
+                            Creating a virtual environment is a complete design and development pipeline that transforms an idea into an interactive VR world.
+                        </p>
+                        <h4>Typical creation process</h4>
+                        <ol>
+                            <li><strong>Requirement analysis:</strong> Define audience, goal, level of realism, and hardware target.</li>
+                            <li><strong>Concept and planning:</strong> Prepare storyboards, layouts, interaction flows, and world logic.</li>
+                            <li><strong>3D asset creation:</strong> Build models, characters, terrain, and props.</li>
+                            <li><strong>Texturing and lighting:</strong> Apply materials and visual mood.</li>
+                            <li><strong>Audio design:</strong> Add ambient sound, effects, dialogue, and spatial cues.</li>
+                            <li><strong>Interaction scripting:</strong> Define navigation, object behavior, menus, and feedback.</li>
+                            <li><strong>Optimization:</strong> Improve frame rate, reduce polygon count, and manage memory.</li>
+                            <li><strong>Testing:</strong> Check usability, comfort, tracking, and realism.</li>
+                            <li><strong>Deployment:</strong> Export for the target headset or platform.</li>
+                        </ol>
+                        <div class="callout">
+                            <strong>Final insight:</strong> A virtual environment is successful when its visual design, interaction model, and system performance support the same user goal.
+                        </div>
+                    </article>
+                </div>
+            </details>
+
+            <details class="unit-accordion" id="unit-5">
+                <summary>
+                    <span class="unit-badge">Unit V</span>
+                    <span class="unit-title-group">
+                        <h2>Applications and Use Cases</h2>
+                        <p>Where AR and VR create value in industry, education, healthcare, entertainment, training, and business.</p>
+                    </span>
+                    <span class="chevron" aria-hidden="true"></span>
+                </summary>
+                <div class="unit-panel">
+                    <div class="question-index">
+                        <a href="#unit-5-q1">1. Engineering and industry</a>
+                        <a href="#unit-5-q2">2. Entertainment and gaming</a>
+                        <a href="#unit-5-q3">3. VR in healthcare and training</a>
+                        <a href="#unit-5-q4">4. Education and learning</a>
+                        <a href="#unit-5-q5">5. Real-world use cases</a>
+                        <a href="#unit-5-q6">6. Simulation and training</a>
+                        <a href="#unit-5-q7">7. Future trends</a>
+                        <a href="#unit-5-q8">8. Challenges and limitations</a>
+                        <a href="#unit-5-q9">9. Business and marketing impact</a>
+                        <a href="#unit-5-q10">10. AI, IoT, Metaverse integration</a>
+                    </div>
+
+                    <article class="question-card" id="unit-5-q1">
+                        <span class="q-tag">Question 1</span>
+                        <h3>Explain applications of AR/VR in engineering and industry.</h3>
+                        <p class="lead">
+                            AR and VR are transforming engineering and industry by improving visualization, reducing errors,
+                            supporting training, and enabling safer, faster decision-making.
+                        </p>
+                        <h4>AR in engineering and industry</h4>
+                        <ul>
+                            <li>Overlaying assembly instructions on machines and components</li>
+                            <li>Remote expert assistance for maintenance and troubleshooting</li>
+                            <li>Digital twin visualization for factories and infrastructure</li>
+                            <li>Warehouse picking and logistics optimization</li>
+                            <li>On-site design validation in construction and civil engineering</li>
+                        </ul>
+                        <h4>VR in engineering and industry</h4>
+                        <ul>
+                            <li>Immersive design review before physical prototyping</li>
+                            <li>Simulation of hazardous scenarios without physical risk</li>
+                            <li>Training for equipment operation, safety drills, and manufacturing procedures</li>
+                            <li>Ergonomic evaluation of products and workspaces</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Benefits:</strong> Lower prototyping cost, faster design cycles, reduced downtime, better collaboration, and improved worker safety.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q2">
+                        <span class="q-tag">Question 2</span>
+                        <h3>Discuss the role of AR/VR in entertainment and gaming.</h3>
+                        <p class="lead">
+                            Entertainment and gaming are among the most visible and commercially successful application areas for AR and VR.
+                        </p>
+                        <h4>Role in gaming</h4>
+                        <ul>
+                            <li><strong>VR gaming:</strong> Creates fully immersive play spaces where users physically look, aim, move, and interact.</li>
+                            <li><strong>AR gaming:</strong> Blends game elements with real surroundings, making ordinary spaces part of gameplay.</li>
+                            <li><strong>Multiplayer immersion:</strong> Shared arenas and social VR make gaming more collaborative and competitive.</li>
+                            <li><strong>Haptic-enhanced play:</strong> Controllers and accessories increase realism and feedback.</li>
+                        </ul>
+                        <h4>Role in entertainment</h4>
+                        <ul>
+                            <li>AR concert effects and live event enhancements</li>
+                            <li>VR cinema, 360-degree storytelling, and virtual set exploration</li>
+                            <li>Interactive theme parks and location-based experiences</li>
+                            <li>Sports broadcasts with live overlays, replay graphics, and performance data</li>
+                            <li>Social media filters as daily entertainment tools</li>
+                        </ul>
+                        <div class="callout compare">
+                            <strong>Examples:</strong> Beat Saber and Half-Life: Alyx show immersive VR gameplay, while Pokemon Go shows how AR can turn real streets and parks into game spaces.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q3">
+                        <span class="q-tag">Question 3</span>
+                        <h3>Explain the use of VR in healthcare and training.</h3>
+                        <p class="lead">
+                            VR is especially valuable in healthcare and training because it allows people to practice difficult,
+                            expensive, or risky tasks in a controlled environment.
+                        </p>
+                        <h4>Healthcare uses</h4>
+                        <ul>
+                            <li>Surgical simulation and rehearsal</li>
+                            <li>Medical education using anatomy exploration and procedure walkthroughs</li>
+                            <li>Pain distraction and stress reduction for patients</li>
+                            <li>Exposure therapy for phobias, anxiety, or PTSD</li>
+                            <li>Rehabilitation exercises and motor recovery programs</li>
+                        </ul>
+                        <h4>Training uses</h4>
+                        <ul>
+                            <li>Aviation, military, fire safety, and disaster drills</li>
+                            <li>Industrial safety practice without physical danger</li>
+                            <li>Soft-skills training such as communication or emergency response</li>
+                            <li>Repetitive practice with measurable performance tracking</li>
+                        </ul>
+                        <p>
+                            The major advantage is repeatability. A scenario can be replayed many times without using expensive materials,
+                            risking injury, or disrupting real operations.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q4">
+                        <span class="q-tag">Question 4</span>
+                        <h3>Describe AR/VR applications in education and learning.</h3>
+                        <p class="lead">
+                            AR and VR improve learning by turning abstract concepts into interactive experiences that students can see,
+                            hear, and manipulate.
+                        </p>
+                        <h4>AR in education</h4>
+                        <ul>
+                            <li>Overlaying diagrams on textbooks or lab objects</li>
+                            <li>Showing interactive 3D models of organs, planets, machines, or molecules</li>
+                            <li>Supporting field-based learning with contextual information</li>
+                            <li>Helping young learners through visual and engaging instruction</li>
+                        </ul>
+                        <h4>VR in education</h4>
+                        <ul>
+                            <li>Virtual laboratories and simulations</li>
+                            <li>Historical site tours and cultural exploration</li>
+                            <li>Immersive skill training in medicine, engineering, or architecture</li>
+                            <li>Collaborative virtual classrooms and remote labs</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Educational impact:</strong> Better engagement, improved retention, safe experimentation, and deeper conceptual understanding.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q5">
+                        <span class="q-tag">Question 5</span>
+                        <h3>Discuss real-world use cases of AR/VR technologies.</h3>
+                        <p class="lead">
+                            The real-world value of AR and VR is best understood through practical cases where they save time,
+                            improve understanding, or create new kinds of experiences.
+                        </p>
+                        <h4>Representative real-world cases</h4>
+                        <ul>
+                            <li><strong>Retail:</strong> IKEA Place allows customers to preview furniture in real rooms.</li>
+                            <li><strong>Entertainment:</strong> Social AR filters on Snapchat and Instagram are used by millions daily.</li>
+                            <li><strong>Gaming:</strong> Pokemon Go combines mobile sensors, GPS, and camera-based overlays.</li>
+                            <li><strong>Industrial support:</strong> AR maintenance systems show repair steps directly on equipment.</li>
+                            <li><strong>Healthcare:</strong> VR simulations train surgeons and support exposure therapy.</li>
+                            <li><strong>Navigation:</strong> AR arrows guide users through cities and indoor locations.</li>
+                            <li><strong>Design review:</strong> VR lets engineers walk through factories, buildings, or products before they exist physically.</li>
+                        </ul>
+                        <p>
+                            These examples show that AR/VR is no longer limited to research labs. It is already present in consumer apps,
+                            industrial workflows, and professional training systems.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q6">
+                        <span class="q-tag">Question 6</span>
+                        <h3>Explain the role of AR/VR in simulation and training systems.</h3>
+                        <p class="lead">
+                            Simulation and training are among the strongest long-term use cases because AR/VR can reproduce complex tasks
+                            without the cost and risk of real-world execution.
+                        </p>
+                        <h4>Role of VR</h4>
+                        <ul>
+                            <li>Creates complete training scenarios such as cockpit operation, emergency response, or surgical practice.</li>
+                            <li>Allows repeated failure and correction without real damage.</li>
+                            <li>Measures time, accuracy, movement, and decision quality for assessment.</li>
+                        </ul>
+                        <h4>Role of AR</h4>
+                        <ul>
+                            <li>Supports on-the-job training by overlaying real equipment with instructions.</li>
+                            <li>Helps beginners perform real tasks with guided steps and warnings.</li>
+                            <li>Reduces dependence on printed manuals and constant supervision.</li>
+                        </ul>
+                        <h4>Advantages</h4>
+                        <ul>
+                            <li>Safe practice of rare or dangerous scenarios</li>
+                            <li>Consistent training quality</li>
+                            <li>Lower material wastage</li>
+                            <li>Better engagement and memory retention</li>
+                        </ul>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q7">
+                        <span class="q-tag">Question 7</span>
+                        <h3>Discuss future trends in AR/VR technologies.</h3>
+                        <p class="lead">
+                            The future of AR/VR points toward lighter devices, smarter interaction, richer sensing, and more persistent digital spaces.
+                        </p>
+                        <h4>Major future trends</h4>
+                        <ul>
+                            <li><strong>Lighter headsets and smart glasses:</strong> Better comfort will improve adoption.</li>
+                            <li><strong>AI-enhanced experiences:</strong> Smarter assistants, scene understanding, adaptive tutoring, and intelligent virtual agents.</li>
+                            <li><strong>Cloud and edge rendering:</strong> Heavy processing can shift off-device for higher fidelity.</li>
+                            <li><strong>5G and low-latency networking:</strong> Better support for remote collaboration and streaming.</li>
+                            <li><strong>Improved haptics:</strong> More realistic touch, force, and tactile interaction.</li>
+                            <li><strong>Digital twins and enterprise spatial computing:</strong> Strong growth in industry and infrastructure.</li>
+                            <li><strong>Shared persistent spaces:</strong> Multi-user mixed environments linked to real places and workflows.</li>
+                        </ul>
+                        <p>
+                            The trend is moving from isolated apps toward spatial computing platforms where digital content stays anchored
+                            to places, tools, and collaborative tasks over time.
+                        </p>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q8">
+                        <span class="q-tag">Question 8</span>
+                        <h3>Explain challenges and limitations of AR/VR systems.</h3>
+                        <p class="lead">
+                            Even though AR and VR are powerful, they still face practical limitations that affect performance,
+                            comfort, cost, and large-scale adoption.
+                        </p>
+                        <h4>Technical limitations</h4>
+                        <ul>
+                            <li>High computational requirements</li>
+                            <li>Battery drain and heat in mobile devices</li>
+                            <li>Tracking errors and limited field of view</li>
+                            <li>Latency and motion-to-photon delay</li>
+                            <li>Expensive hardware for high-end experiences</li>
+                        </ul>
+                        <h4>Human and social limitations</h4>
+                        <ul>
+                            <li>Motion sickness or visual fatigue in VR</li>
+                            <li>Privacy concerns due to cameras and environmental scanning</li>
+                            <li>Social acceptance issues with wearable devices</li>
+                            <li>Accessibility challenges for some users</li>
+                            <li>Need for better content design standards</li>
+                        </ul>
+                        <div class="callout warn">
+                            <strong>Important view:</strong> The challenge is not only making AR/VR possible. It is making it affordable, comfortable, ethical, and useful over long periods.
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q9">
+                        <span class="q-tag">Question 9</span>
+                        <h3>Describe the impact of AR/VR in business and marketing.</h3>
+                        <p class="lead">
+                            AR and VR are changing business and marketing by making products easier to understand, more engaging to explore,
+                            and more memorable to experience.
+                        </p>
+                        <h4>Business impact</h4>
+                        <ul>
+                            <li>Improves product design review and remote collaboration</li>
+                            <li>Supports employee training and process guidance</li>
+                            <li>Creates digital twins for planning and monitoring</li>
+                            <li>Enables virtual showrooms and remote demonstrations</li>
+                        </ul>
+                        <h4>Marketing impact</h4>
+                        <ul>
+                            <li><strong>AR try-on:</strong> Customers can preview glasses, makeup, shoes, or furniture.</li>
+                            <li><strong>Brand storytelling:</strong> Campaigns become interactive rather than static.</li>
+                            <li><strong>Event engagement:</strong> AR at concerts, malls, and trade shows increases retention.</li>
+                            <li><strong>Customer confidence:</strong> Visualization reduces uncertainty and can improve conversion.</li>
+                        </ul>
+                        <div class="callout compare">
+                            <strong>Business value:</strong> AR/VR reduces the gap between imagination and purchase by letting customers "experience before buying."
+                        </div>
+                    </article>
+
+                    <article class="question-card" id="unit-5-q10">
+                        <span class="q-tag">Question 10</span>
+                        <h3>Explain emerging technologies integrated with AR/VR (AI, IoT, Metaverse).</h3>
+                        <p class="lead">
+                            AR and VR become far more powerful when combined with other emerging technologies such as AI, IoT,
+                            cloud computing, 5G, and metaverse-style shared platforms.
+                        </p>
+                        <h4>AI with AR/VR</h4>
+                        <ul>
+                            <li>Object recognition and scene understanding in AR</li>
+                            <li>Virtual assistants, intelligent tutors, and responsive NPCs in VR</li>
+                            <li>Speech recognition, gesture recognition, and personalization</li>
+                        </ul>
+                        <h4>IoT with AR/VR</h4>
+                        <ul>
+                            <li>AR can visualize live sensor data from factories, homes, and hospitals.</li>
+                            <li>VR can simulate digital twin environments using real-world data streams.</li>
+                            <li>Maintenance teams can see machine status overlaid directly on equipment.</li>
+                        </ul>
+                        <h4>Metaverse and shared spatial platforms</h4>
+                        <p>
+                            The metaverse idea refers to persistent, shared, interactive digital spaces where users, assets,
+                            and identities continue across sessions. AR and VR serve as important access modes to these spaces.
+                            In education, business, and entertainment, this can mean collaborative virtual campuses, shared design rooms,
+                            or mixed digital-physical event environments.
+                        </p>
+                        <h4>Other supporting technologies</h4>
+                        <ul>
+                            <li><strong>5G:</strong> Low-latency data streaming and remote collaboration.</li>
+                            <li><strong>Cloud computing:</strong> Heavy rendering, storage, and multi-user synchronization.</li>
+                            <li><strong>Digital twins:</strong> Real-time virtual replicas of physical systems.</li>
+                        </ul>
+                        <div class="callout">
+                            <strong>Final point:</strong> The future of AR/VR is not isolated hardware. It is an ecosystem where intelligent software, real-time data, and persistent spatial experiences work together.
+                        </div>
+                    </article>
+                </div>
+            </details>
+        </main>
+
+        <footer class="footer">
+            Detailed AR/VR study notes prepared as a single responsive HTML file for direct offline study, revision, and presentation use.
+        </footer>
+    </div>
+
+    <script>
+        const accordions = Array.from(document.querySelectorAll(".unit-accordion"));
+        const expandAllButton = document.getElementById("expand-all");
+        const collapseAllButton = document.getElementById("collapse-all");
+
+        function openAccordionForHash() {
+            const id = window.location.hash.slice(1);
+            if (!id) {
+                return;
+            }
+
+            const target = document.getElementById(id);
+            if (!target) {
+                return;
+            }
+
+            const parentAccordion = target.closest(".unit-accordion");
+            if (parentAccordion) {
+                parentAccordion.open = true;
+            }
+        }
+
+        expandAllButton.addEventListener("click", () => {
+            accordions.forEach((accordion) => {
+                accordion.open = true;
+            });
+        });
+
+        collapseAllButton.addEventListener("click", () => {
+            accordions.forEach((accordion, index) => {
+                accordion.open = index === 0;
+            });
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        document.querySelectorAll('a[href^="#"]').forEach((link) => {
+            link.addEventListener("click", () => {
+                const target = document.querySelector(link.getAttribute("href"));
+                if (!target) {
+                    return;
+                }
+                const parentAccordion = target.closest(".unit-accordion");
+                if (parentAccordion) {
+                    parentAccordion.open = true;
+                }
+            });
+        });
+
+        openAccordionForHash();
+        window.addEventListener("hashchange", openAccordionForHash);
+    </script>
+</body>
+</html>
